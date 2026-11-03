@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#147d55" />
+    <title>Botica | Sistema de gestión</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-mark">+</div>
+          <div><strong>Botica</strong><small>Gestión simple</small></div>
+        </div>
+        <div class="nav-caption">MENÚ PRINCIPAL</div>
+        <nav class="main-nav">
+          <button class="nav-link active" data-page="dashboard">
+            <span>▦</span> Dashboard
+          </button>
+          <button class="nav-link" data-page="inventario">
+            <span>▤</span> Inventario
+          </button>
+          <button class="nav-link" data-page="pos">
+            <span>▣</span> Punto de venta
+          </button>
+          <button class="nav-link" data-page="ventas">
+            <span>▧</span> Ventas
+          </button>
+        </nav>
+        <div class="sidebar-bottom">
+          <span class="status-dot"></span
+          ><span id="connection-status">Conectando...</span
+          ><small>Mini proyecto · v1.0</small>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+            ☰
+          </button>
+          <div>
+            <div class="eyebrow">SISTEMA DE BOTICA</div>
+            <h1 id="page-title">Dashboard</h1>
+          </div>
+          <div class="topbar-right">
+            <span class="today-label" id="today-label"></span
+            ><button class="btn btn-light btn-small" id="refresh-current">
+              ↻ Actualizar
+            </button>
+          </div>
+        </header>
+
+        <section class="page-section active" id="page-dashboard">
+          <div class="section-heading">
+            <div>
+              <h2>Resumen general</h2>
+              <p>Estado actual del inventario y actividad de ventas.</p>
+            </div>
+          </div>
+          <div class="stats-grid" id="stats-grid">
+            <article class="stat-card">
+              <span class="stat-icon green">▤</span>
+              <div>
+                <span>Productos activos</span
+                ><strong id="stat-productos">—</strong>
+              </div>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon amber">⚑</span>
+              <div>
+                <span>Stock bajo</span><strong id="stat-bajo">—</strong>
+              </div>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon red">!</span>
+              <div>
+                <span>Agotados</span><strong id="stat-agotados">—</strong>
+              </div>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon blue">◷</span>
+              <div>
+                <span>Lotes por vencer</span><strong id="stat-vencer">—</strong>
+              </div>
+            </article>
+            <article class="stat-card">
+              <span class="stat-icon green">S/</span>
+              <div>
+                <span>Ventas de hoy</span><strong id="stat-ventas">—</strong>
+              </div>
+            </article>
+          </div>
+          <div class="two-column">
+            <article class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h3>Alertas de stock bajo</h3>
+                  <p>Productos que requieren reposición.</p>
+                </div>
+                <button class="text-button" data-go="inventario">
+                  Ver inventario →
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Stock disponible</th>
+                      <th>Mínimo</th>
+                      <th>Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody id="low-stock-body">
+                    <tr>
+                      <td colspan="4" class="empty-cell">Cargando...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+            <article class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h3>Próximos a vencer</h3>
+                  <p>Lotes con vencimiento dentro de 90 días.</p>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Producto / lote</th>
+                      <th>Vencimiento</th>
+                      <th>Stock</th>
+                      <th>Restan</th>
+                    </tr>
+                  </thead>
+                  <tbody id="expiring-body">
+                    <tr>
+                      <td colspan="4" class="empty-cell">Cargando...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="page-section" id="page-inventario">
+          <div class="section-heading">
+            <div>
+              <h2>Inventario</h2>
+              <p>Administra productos, precios, mínimos y lotes.</p>
+            </div>
+            <button class="btn btn-primary" id="new-product">
+              ＋ Nuevo producto
+            </button>
+          </div>
+          <article class="panel">
+            <div class="toolbar">
+              <div class="search-box">
+                <span>⌕</span
+                ><input
+                  id="inventory-search"
+                  type="search"
+                  placeholder="Buscar producto por nombre..."
+                />
+              </div>
+              <span class="muted" id="inventory-count"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Precio venta</th>
+                    <th>Stock total</th>
+                    <th>Disponible</th>
+                    <th>Stock mínimo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-body">
+                  <tr>
+                    <td colspan="7" class="empty-cell">Cargando...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="page-section" id="page-pos">
+          <div class="section-heading">
+            <div>
+              <h2>Punto de venta</h2>
+              <p>Busca productos y prepara el ticket de venta.</p>
+            </div>
+            <span class="live-label"
+              ><span class="status-dot"></span> Stock sincronizado</span
+            >
+          </div>
+          <div class="pos-layout">
+            <article class="panel products-panel">
+              <div class="toolbar">
+                <div class="search-box search-wide">
+                  <span>⌕</span
+                  ><input
+                    id="pos-search"
+                    type="search"
+                    placeholder="Buscar producto..."
+                  />
+                </div>
+                <span class="muted" id="pos-count"></span>
+              </div>
+              <div class="product-grid" id="pos-products">
+                <div class="empty-cell">Cargando catálogo...</div>
+              </div>
+            </article>
+            <aside class="panel ticket-panel">
+              <div class="ticket-title">
+                <div>
+                  <h3>Ticket de venta</h3>
+                  <p id="ticket-count">0 productos</p>
+                </div>
+                <button class="text-button" id="clear-cart">Vaciar</button>
+              </div>
+              <div id="cart-items" class="cart-items">
+                <div class="cart-empty">
+                  El ticket está vacío.<br /><span
+                    >Agrega productos del catálogo.</span
+                  >
+                </div>
+              </div>
+              <div class="ticket-footer">
+                <div class="total-row">
+                  <span>Total</span><strong id="cart-total">S/ 0.00</strong>
+                </div>
+                <label class="field-label" for="payment-method"
+                  >Método de pago</label
+                ><select id="payment-method" class="form-control">
+                  <option value="EFECTIVO">Efectivo</option>
+                  <option value="YAPE">Yape</option>
+                  <option value="PLIN">Plin</option>
+                  <option value="TARJETA">Tarjeta</option>
+                  <option value="TRANSFERENCIA">Transferencia</option></select
+                ><button
+                  class="btn btn-primary btn-block"
+                  id="checkout-button"
+                  disabled
+                >
+                  Confirmar venta
+                </button>
+                <p class="ticket-note">
+                  El stock se valida nuevamente al confirmar.
+                </p>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="page-section" id="page-ventas">
+          <div class="section-heading">
+            <div>
+              <h2>Historial de ventas</h2>
+              <p>Consulta las operaciones y sus productos vendidos.</p>
+            </div>
+          </div>
+          <article class="panel">
+            <div class="toolbar filters-toolbar">
+              <div class="date-filters">
+                <label
+                  >Desde
+                  <input
+                    type="date"
+                    id="sales-from"
+                    class="form-control" /></label
+                ><label
+                  >Hasta
+                  <input
+                    type="date"
+                    id="sales-to"
+                    class="form-control" /></label
+                ><button class="btn btn-light btn-small" id="filter-sales">
+                  Filtrar</button
+                ><button class="text-button" id="clear-sales-filter">
+                  Limpiar
+                </button>
+              </div>
+              <span class="muted" id="sales-count"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>N.º venta</th>
+                    <th>Fecha</th>
+                    <th>Unidades</th>
+                    <th>Total</th>
+                    <th>Pago</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="sales-body">
+                  <tr>
+                    <td colspan="7" class="empty-cell">Cargando...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <footer class="app-footer">
+          Sistema de gestión de botica · Proyecto demostrativo
+        </footer>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal-backdrop" hidden>
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <div class="modal-header">
+          <div>
+            <h3 id="modal-title">Formulario</h3>
+            <p id="modal-description"></p>
+          </div>
+          <button class="icon-button" id="modal-close" aria-label="Cerrar">
+            ×
+          </button>
+        </div>
+        <div id="modal-content"></div>
+      </div>
+    </div>
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+
+    <script src="js/api.js"></script>
+    <script src="js/websocket.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/pos.js"></script>
+    <script src="js/sales.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

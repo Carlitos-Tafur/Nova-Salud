@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const controller = require('../controllers/products.controller');
+router.get('/', controller.listar);
+router.post('/', controller.crear);
+router.get('/:id/lotes', controller.listarLotes);
+router.post('/:id/lotes', controller.crearLote);
+router.get('/:id', controller.obtener);
+router.put('/:id', controller.actualizar);
+router.delete('/:id', controller.eliminar);
+module.exports = router;
