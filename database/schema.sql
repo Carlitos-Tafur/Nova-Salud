@@ -1,15 +1,15 @@
 -- Base de datos independiente para el mini-proyecto de botica.
 -- Compatible con MySQL 8.0+. Se puede ejecutar en MySQL Workbench.
-
-
+ 
+ 
 CREATE DATABASE IF NOT EXISTS botica_db
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
-
-
+ 
+ 
 USE botica_db;
-
-
+ 
+ 
 CREATE TABLE IF NOT EXISTS productos (
     id_producto INT AUTO_INCREMENT PRIMARY KEY,
     nombre_producto VARCHAR(150) NOT NULL,
@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS productos (
     INDEX idx_productos_nombre (nombre_producto),
     INDEX idx_productos_activo (activo)
 ) ENGINE=InnoDB;
-
-
+ 
+ 
 CREATE TABLE IF NOT EXISTS lotes (
     id_lote INT AUTO_INCREMENT PRIMARY KEY,
     id_producto INT NOT NULL,
@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS lotes (
     INDEX idx_lotes_vencimiento (vencimiento),
     INDEX idx_lotes_producto_stock (id_producto, stock)
 ) ENGINE=InnoDB;
-
-
+ 
+ 
 CREATE TABLE IF NOT EXISTS ventas (
     id_venta INT AUTO_INCREMENT PRIMARY KEY,
     fecha_venta DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -48,8 +48,8 @@ CREATE TABLE IF NOT EXISTS ventas (
     INDEX idx_ventas_fecha (fecha_venta),
     INDEX idx_ventas_estado (estado)
 ) ENGINE=InnoDB;
-
-
+ 
+ 
 CREATE TABLE IF NOT EXISTS detalle_venta (
     id_detalle INT AUTO_INCREMENT PRIMARY KEY,
     id_venta INT NOT NULL,
@@ -72,8 +72,8 @@ CREATE TABLE IF NOT EXISTS detalle_venta (
     CONSTRAINT chk_detalle_subtotal CHECK (subtotal >= 0),
     INDEX idx_detalle_venta (id_venta)
 ) ENGINE=InnoDB;
-
-
+ 
+ 
 -- Historial informativo. La cantidad siempre se registra en positivo;
 -- el tipo indica si fue entrada o salida.
 CREATE TABLE IF NOT EXISTS movimientos_stock (
@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS movimientos_stock (
     INDEX idx_movimientos_fecha (fecha_movimiento),
     INDEX idx_movimientos_lote (id_lote)
 ) ENGINE=InnoDB;
-
-
+ 
+ 
 -- Vista resumen: una fila por producto. El stock_actual incluye todos los
 -- lotes; stock_disponible excluye lotes vencidos para evitar venderlos.
 CREATE OR REPLACE VIEW catalogo AS
@@ -114,8 +114,8 @@ GROUP BY
     p.stock_minimo,
     p.precio_venta,
     p.activo;
-
-
+ 
+ 
 -- Datos de prueba opcionales. Descomenta si deseas probar rápidamente.
 -- INSERT INTO productos (nombre_producto, stock_minimo, precio_venta)
 -- VALUES ('Paracetamol 500 mg', 20, 0.50), ('Ibuprofeno 400 mg', 10, 1.00);
