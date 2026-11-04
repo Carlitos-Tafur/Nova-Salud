@@ -1,5 +1,5 @@
-const db = require('../config/database');
-const asyncHandler = require('../utils/async-handler');
+const db = require("../config/database");
+const asyncHandler = require("../utils/async-handler");
 
 exports.resumen = asyncHandler(async (req, res) => {
   const [[row]] = await db.query(`
@@ -27,8 +27,12 @@ exports.stockBajo = asyncHandler(async (req, res) => {
 });
 
 exports.proximosVencer = asyncHandler(async (req, res) => {
-  const dias = Math.min(Math.max(Number.parseInt(req.query.dias, 10) || 90, 1), 365);
-  const [rows] = await db.execute(`
+  const dias = Math.min(
+    Math.max(Number.parseInt(req.query.dias, 10) || 90, 1),
+    365,
+  );
+  const [rows] = await db.execute(
+    `
     SELECT l.id_lote, l.id_producto, p.nombre_producto, l.codigo_lote,
            DATE_FORMAT(l.vencimiento, '%Y-%m-%d') AS vencimiento,
            l.stock,
@@ -38,6 +42,8 @@ exports.proximosVencer = asyncHandler(async (req, res) => {
     WHERE p.activo = 1 AND l.stock > 0
       AND l.vencimiento BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL ? DAY)
     ORDER BY l.vencimiento ASC
-  `, [dias]);
+  `,
+    [dias],
+  );
   res.json(rows);
 });
